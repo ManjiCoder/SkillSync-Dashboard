@@ -99,7 +99,9 @@ export default function SignUp() {
               values,
               errors,
               handleChange,
+              handleBlur,
               handleSubmit,
+              isValid,
               /* and other goodies */
             }) => (
               <form className="space-y-6" onSubmit={handleSubmit}>
@@ -114,13 +116,13 @@ export default function SignUp() {
                   <div className="mt-2">
                     <input
                       id="name"
+                      className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       name="name"
                       type="text"
                       autoComplete="text"
-                      required
-                      value={values.name}
                       onChange={handleChange}
-                      className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      onBlur={handleBlur}
+                      value={values.name}
                     />
                   </div>
                   <ErrorMessage error={errors.name} />
@@ -136,13 +138,13 @@ export default function SignUp() {
                   <div className="mt-2">
                     <input
                       id="email"
+                      className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       name="email"
                       type="email"
                       autoComplete="email"
-                      required
-                      value={values.email}
                       onChange={handleChange}
-                      className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      onBlur={handleBlur}
+                      value={values.email}
                     />
                   </div>
                   <ErrorMessage error={errors.email} />
@@ -160,13 +162,13 @@ export default function SignUp() {
                   <div className="mt-2">
                     <input
                       id="password"
+                      className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       name="password"
                       type="password"
                       autoComplete="current-password"
-                      required
-                      value={values.password}
                       onChange={handleChange}
-                      className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      onBlur={handleBlur}
+                      value={values.password}
                     />
                   </div>
                   <ErrorMessage error={errors.password} />
@@ -175,7 +177,10 @@ export default function SignUp() {
                 <div>
                   <button
                     type="submit"
-                    className="flex mt-8 w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    disabled={!isValid}
+                    className={`flex mt-8 w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
+                      isValid && "brightness-90"
+                    }`}
                   >
                     Sign in
                   </button>

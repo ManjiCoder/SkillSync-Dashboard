@@ -1,6 +1,7 @@
 import HeaderSEO from "@/components/HeaderSEO";
 import UserModel from "@/models/User";
 import { verify } from "@/utils/server-utils";
+import dbConnect from "@/utils/dbConnect";
 export default function Home() {
   return (
     <>
@@ -21,6 +22,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   if (token) {
     const payload: any = await verify(token, process.env.JWT_PRIVATE_KEY);
     const { id } = payload.userId;
+    await dbConnect();
     const user = await UserModel.findById(id);
     // console.log(user.name);
     return {
@@ -30,6 +32,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       },
     };
   }
+  console.log(token);
+
   // Pass data to the page via props
   return {
     redirect: {

@@ -2,12 +2,12 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { FaRegBell } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 
 import { links } from "./Sidebar";
-import { useRouter } from "next/router";
 
 export default function Navbar() {
   const { pathname } = useRouter();
