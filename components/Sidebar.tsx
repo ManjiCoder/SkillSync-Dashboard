@@ -1,9 +1,8 @@
-"use client";
 import Link from "next/link";
 import React from "react";
-import { usePathname } from "next/navigation";
 
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { useRouter } from "next/router";
 
 export const links = [
   {
@@ -19,7 +18,7 @@ export const links = [
 ];
 
 export default function Sidebar() {
-  const pathname = usePathname();
+  const { pathname } = useRouter();
   return (
     <aside className="hidden lg:flex w-60 my-3 flex-col items-center">
       {links.map(({ name, href, icon }) => (

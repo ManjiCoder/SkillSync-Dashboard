@@ -7,10 +7,10 @@ import { FaRegBell } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 
 import { links } from "./Sidebar";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
-  const pathname = usePathname();
+  const { pathname } = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const closeSideBar = () => {

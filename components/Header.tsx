@@ -6,8 +6,11 @@ import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import Navbar from "./Navbar";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "@/store";
+import { useSelector } from "react-redux";
 
 export default function Header() {
+  const { user } = useSelector((state: any) => state.user);
+  // console.log(user);
   return (
     <PersistGate loading={null} persistor={persistor}>
       <header className="lg:flex justify-between items-center lg:pl-10 lg:pr-16 w-full lg:h-20">
@@ -30,7 +33,7 @@ export default function Header() {
 
             <div className="flex w-32 flex-col flex-1 font-semibold text-indigo-600">
               <h3 className="text-xs">Welcome back,</h3>
-              <h2 className="text-[18px]">Manji Coder</h2>
+              <h2 className="text-[18px]">{user.name}</h2>
             </div>
             <button className="w-4 text-xl">
               <MdOutlineKeyboardArrowDown />

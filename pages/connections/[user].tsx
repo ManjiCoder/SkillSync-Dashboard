@@ -1,17 +1,19 @@
 import React from "react";
-import ProfileInfo from "@/components/Profile";
 import Sidebar from "@/components/Sidebar";
+
+import HeaderSEO from "@/components/HeaderSEO";
+import ConnectionsInfo from "@/components/ConnectionInfo";
 
 export default function Profile({ userName }: any) {
   return (
     <>
       <HeaderSEO
-        title={`${userName} Profile | SkillSync Dashboard `}
+        title={`${userName} Connections | SkillSync Dashboard `}
         description={null}
       />
       <main className="flex">
         <Sidebar />
-        <ProfileInfo />
+        <ConnectionsInfo />
       </main>
     </>
   );
@@ -19,7 +21,6 @@ export default function Profile({ userName }: any) {
 
 // SSR
 import type { GetServerSideProps } from "next";
-import HeaderSEO from "@/components/HeaderSEO";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let user: any = context.query.user;
