@@ -39,7 +39,6 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <ErrorBoundary>
-        <Header />
         {isLoading ? <Loading /> : null}
         <Component {...pageProps} />
         <Toast />

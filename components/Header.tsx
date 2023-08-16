@@ -1,15 +1,19 @@
 import Image from "next/image";
 import React from "react";
-
-import { FaRegBell } from "react-icons/fa";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import Navbar from "./Navbar";
+import MenuUI from "./headlessUI/MenuUI";
+import UserAction from "./UserAction";
+
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "@/store";
 import { useSelector } from "react-redux";
 
+import { FaRegBell } from "react-icons/fa";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { Menu } from "@headlessui/react";
+
 export default function Header() {
-  const { user } = useSelector((state: any) => state.user);
+  const { isAuth, user } = useSelector((state: any) => state.user);
   // console.log(user);
   return (
     <PersistGate loading={null} persistor={persistor}>
@@ -33,11 +37,20 @@ export default function Header() {
 
             <div className="flex w-32 flex-col flex-1 font-semibold text-indigo-600">
               <h3 className="text-xs">Welcome back,</h3>
-              <h2 className="text-[18px]">{user.name}</h2>
+              <h2 className="font-bold">{user?.name}</h2>
             </div>
-            <button className="w-4 text-xl">
-              <MdOutlineKeyboardArrowDown />
-            </button>
+
+            {isAuth && (
+              <MenuUI
+                parent={
+                  <Menu.Button className="w-4 text-xl">
+                    <MdOutlineKeyboardArrowDown />
+                  </Menu.Button>
+                }
+              >
+                <UserAction />
+              </MenuUI>
+            )}
           </div>
         </section>
 

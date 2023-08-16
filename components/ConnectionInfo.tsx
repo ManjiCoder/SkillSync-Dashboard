@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import EditButton from "./EditButton";
+import { EditButton } from "./FormHelper";
 
 const myConnections = [
   {

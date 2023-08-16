@@ -1,17 +1,24 @@
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
 import { Formik } from "formik";
 import { signUpSchema } from "@/lib/Yup";
-import ErrorMessage from "@/components/ErrorMessage";
-import HeaderSEO from "@/components/HeaderSEO";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { logIn } from "@/redux-slices/User";
 
+import ErrorMessage from "@/components/ErrorMessage";
+import HeaderSEO from "@/components/HeaderSEO";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 export default function SignUp() {
   const { toastDuration } = useSelector((state: any) => state.static);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisiblity = () => {
+    setShowPassword(!showPassword);
+  };
+
   const dispatch = useDispatch();
   const router = useRouter();
   const handleSignUp = async (
@@ -23,7 +30,7 @@ export default function SignUp() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/sign-up`,
         {
           method: "POST",
           body: JSON.stringify({ name, email, password }),
@@ -66,6 +73,7 @@ export default function SignUp() {
       console.log({ error });
     }
   };
+
   return (
     <>
       <HeaderSEO description={null} title="Sign Up | SkillSync Dashboard" />
@@ -87,12 +95,8 @@ export default function SignUp() {
           <Formik
             initialValues={{ name: "", email: "", password: "" }}
             validationSchema={signUpSchema}
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={(values) => {
               handleSignUp(values.name, values.email, values.password);
-              // setTimeout(() => {
-              //   alert(JSON.stringify(values, null, 2));
-              //   setSubmitting(false);
-              // }, 400);
             }}
           >
             {({
@@ -160,16 +164,29 @@ export default function SignUp() {
                     </label>
                   </div>
                   <div className="mt-2">
-                    <input
-                      id="password"
-                      className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      name="password"
-                      type="password"
-                      autoComplete="current-password"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                    />
+                    <div className="flex items-center">
+                      <input
+                        id="password"
+                        name="password"
+                        className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="current-password"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.password}
+                      ></input>
+                      <button
+                        name="showPassword"
+                        type="button"
+                        onClick={togglePasswordVisiblity}
+                      >
+                        {!showPassword ? (
+                          <FaEyeSlash className="absolute -translate-y-2 -translate-x-7" />
+                        ) : (
+                          <FaEye className="absolute -translate-y-2 -translate-x-7" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                   <ErrorMessage error={errors.password} />
                 </div>

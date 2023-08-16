@@ -15,9 +15,12 @@ const User = createSlice({
     logOut(state, action) {
       return (state = initialState);
     },
+    uploadPhoto(state, action) {
+      return { ...state.user, photo: action.payload };
+    },
   },
 });
 
-export const { logIn, logOut } = User.actions;
+export const { logIn, logOut, uploadPhoto } = User.actions;
 
 export default User.reducer;

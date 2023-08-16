@@ -23,6 +23,7 @@
     "js-cookie": "^3.0.5",
     "mongoose": "^7.4.3",
     "next": "13.4.16",
+    "nookies": "^2.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
@@ -33,6 +34,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@types/cookie": "^0.5.1",
     "@types/js-cookie": "^3.0.3",
     "autoprefixer": "^10.4.15",
     "postcss": "^8.4.27",

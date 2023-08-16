@@ -2,6 +2,8 @@ import HeaderSEO from "@/components/HeaderSEO";
 import UserModel from "@/models/User";
 import { verify } from "@/utils/server-utils";
 import dbConnect from "@/utils/dbConnect";
+import { destroyCookie } from "nookies";
+
 export default function Home() {
   return (
     <>
@@ -16,23 +18,31 @@ export default function Home() {
 // SSR
 import type { GetServerSideProps } from "next";
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   // Fetch data from external API
-  const { token } = req.cookies;
+  const { token } = context.req.cookies;
   if (token) {
     const payload: any = await verify(token, process.env.JWT_PRIVATE_KEY);
     const { id } = payload.userId;
     await dbConnect();
     const user = await UserModel.findById(id);
-    // console.log(user.name);
+    if (user) {
+      return {
+        redirect: {
+          destination: `/profile/${user.name}`,
+          permanent: true,
+        },
+      };
+    }
+    destroyCookie(context, "token");
+
     return {
       redirect: {
-        destination: `/profile/${user.name}`,
+        destination: "/login",
         permanent: true,
       },
     };
   }
-  console.log(token);
 
   // Pass data to the page via props
   return {

@@ -5,11 +5,16 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { FaRegBell } from "react-icons/fa";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 import { links } from "./Sidebar";
+import MenuUI from "./headlessUI/MenuUI";
+import { Menu } from "@headlessui/react";
+import { useSelector } from "react-redux";
+import UserAction from "./UserAction";
 
 export default function Navbar() {
+  const { isAuth } = useSelector((state: any) => state.user);
   const { pathname } = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -74,17 +79,28 @@ export default function Navbar() {
               >
                 <FaRegBell className="rounded-full" />
               </button>
-              <div className="grid place-items-center rounded-full border-2 shadow-sm w-8 h-8 p-1 hover:border-yellow-400">
-                <Image
-                  src={
-                    "https://d1tl44nezj10jx.cloudfront.net/assets/logo_square.svg"
+
+              {isAuth && (
+                <MenuUI
+                  parent={
+                    <Menu.Button className="w-4 mr-5 text-xl">
+                      <div className="grid place-items-center rounded-full border-2 shadow-sm w-8 h-8 p-1 hover:border-yellow-400">
+                        <Image
+                          src={
+                            "https://d1tl44nezj10jx.cloudfront.net/assets/logo_square.svg"
+                          }
+                          height={60}
+                          width={60}
+                          className="h-full"
+                          alt="oruphones"
+                        />
+                      </div>
+                    </Menu.Button>
                   }
-                  height={60}
-                  width={60}
-                  className="h-full"
-                  alt="oruphones"
-                />
-              </div>
+                >
+                  <UserAction />
+                </MenuUI>
+              )}
             </div>
           </li>
         </ul>

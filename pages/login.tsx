@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
@@ -9,11 +9,17 @@ import HeaderSEO from "@/components/HeaderSEO";
 import { useDispatch, useSelector } from "react-redux";
 import { logIn } from "@/redux-slices/User";
 import ErrorMessage from "@/components/ErrorMessage";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Login() {
   const { toastDuration } = useSelector((state: any) => state.static);
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const togglePasswordVisiblity = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleLogin = async (email: string, password: string) => {
     const toastId = toast.loading("Please wait...");
@@ -130,16 +136,29 @@ export default function Login() {
                     </label>
                   </div>
                   <div className="mt-2">
-                    <input
-                      id="password"
-                      className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      name="password"
-                      type="password"
-                      autoComplete="current-password"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                    />
+                    <div className="flex items-center">
+                      <input
+                        id="password"
+                        name="password"
+                        className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="current-password"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.password}
+                      ></input>
+                      <button
+                        name="showPassword"
+                        type="button"
+                        onClick={togglePasswordVisiblity}
+                      >
+                        {!showPassword ? (
+                          <FaEyeSlash className="absolute -translate-y-2 -translate-x-7" />
+                        ) : (
+                          <FaEye className="absolute -translate-y-2 -translate-x-7" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                   <ErrorMessage error={errors.password} />
                 </div>

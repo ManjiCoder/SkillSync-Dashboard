@@ -1,14 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
+import type { GetServerSideProps } from "next";
+import { useDispatch } from "react-redux";
+import { logIn } from "@/redux-slices/User";
+import { destroyCookie } from "nookies";
+
 import ProfileInfo from "@/components/Profile";
 import Sidebar from "@/components/Sidebar";
+import HeaderSEO from "@/components/HeaderSEO";
+import Header from "@/components/Header";
 
-export default function Profile({ userName }: any) {
+export default function Profile({ user }: any) {
+  let userName: any = user.name;
+  userName = userName.split("");
+  userName[0] = userName[0].toUpperCase();
+  userName = userName.join("");
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(logIn(user));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <HeaderSEO
         title={`${userName} Profile | SkillSync Dashboard `}
         description={null}
       />
+      <Header />
       <main className="flex">
         <Sidebar />
         <ProfileInfo />
@@ -18,13 +36,29 @@ export default function Profile({ userName }: any) {
 }
 
 // SSR
-import type { GetServerSideProps } from "next";
-import HeaderSEO from "@/components/HeaderSEO";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let user: any = context.query.user;
-  user = user.split("");
-  user[0] = user[0].toUpperCase();
-  user = user.join("");
-  return { props: { userName: user } };
+  const { token } = context.req.cookies;
+
+  if (token) {
+    let headersList: any = {
+      "x-auth-token": token,
+    };
+
+    let response = await fetch("http://localhost:3000/api/profile/get", {
+      method: "GET",
+      headers: headersList,
+    });
+
+    let data = await response.json();
+
+    return { props: { user: data.user } };
+  }
+  destroyCookie(context, "token");
+  return {
+    redirect: {
+      destination: "/login",
+      permanent: true,
+    },
+  };
 };

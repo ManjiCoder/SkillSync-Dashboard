@@ -1,5 +1,5 @@
 import React from "react";
-import EditButton from "./EditButton";
+import { EditButton } from "./FormHelper";
 import { AiFillStar } from "react-icons/ai";
 import UploadImage from "./UploadImage";
 import { PersistGate } from "redux-persist/integration/react";
@@ -10,9 +10,9 @@ export default function ProfileInfo() {
   const { user } = useSelector((state: any) => state.user);
   console.log(user);
   const basicUserInfo = [
-    { key: "Your Name", value: user.name },
-    { key: "Email", value: user.email },
-    { key: "Phone Number", value: user.phoneNumber },
+    { key: "Your Name", value: user?.name },
+    { key: "Email", value: user?.email },
+    { key: "Phone Number", value: user?.phoneNumber },
   ];
 
   return (
@@ -50,11 +50,12 @@ export default function ProfileInfo() {
                 <section className="border p-4 flex flex-col gap-y-6 rounded-md shadow-md">
                   <div className="flex justify-between items-center">
                     <h1 className="text-xl font-medium">
-                      About <span className="text-indigo-600">{user.name}</span>
+                      About{" "}
+                      <span className="text-indigo-600">{user?.name}</span>
                     </h1>
                     <EditButton />
                   </div>
-                  <p className="font-semibold">{user.bio}</p>
+                  <p className="font-semibold">{user?.bio}</p>
                 </section>
 
                 {/* Skills Info */}
@@ -74,7 +75,7 @@ export default function ProfileInfo() {
                 <section className="border p-4 flex items-center gap-y-6 rounded-md shadow-md">
                   <div className="flex flex-col gap-y-3">
                     <h1 className="text-xl font-bold">Professional Details</h1>
-                    <p className="font-semibold">{user.professionalDetails}</p>
+                    <p className="font-semibold">{user?.professionalDetails}</p>
                   </div>
                   <div className="flex items-center flex-col">
                     <AiFillStar className="text-5xl text-cyan-400 rotate-6" />
