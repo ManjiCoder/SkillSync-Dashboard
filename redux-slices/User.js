@@ -18,9 +18,13 @@ const User = createSlice({
     uploadPhoto(state, action) {
       return { ...state.user, photo: action.payload };
     },
+    editName(state, action) {
+      console.log(action.payload);
+      return { ...state.user, name: action.payload };
+    },
   },
 });
 
-export const { logIn, logOut, uploadPhoto } = User.actions;
+export const { logIn, logOut, uploadPhoto, editName } = User.actions;
 
 export default User.reducer;

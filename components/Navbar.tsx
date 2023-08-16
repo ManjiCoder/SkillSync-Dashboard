@@ -12,9 +12,10 @@ import MenuUI from "./headlessUI/MenuUI";
 import { Menu } from "@headlessui/react";
 import { useSelector } from "react-redux";
 import UserAction from "./UserAction";
+import BrandImage from "./BrandImage";
 
 export default function Navbar() {
-  const { isAuth } = useSelector((state: any) => state.user);
+  const { isAuth, user } = useSelector((state: any) => state.user);
   const { pathname } = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -61,15 +62,7 @@ export default function Navbar() {
         </button>
         <ul className="flex flex-1 justify-between items-center">
           <li>
-            <Image
-              src={
-                "https://d1tl44nezj10jx.cloudfront.net/assets/logo_square.svg"
-              }
-              height={60}
-              width={60}
-              className="h-full"
-              alt="oruphones"
-            />
+            <BrandImage />
           </li>
           <li>
             <div className="flex text-xl space-x-2 items-center">
@@ -84,15 +77,17 @@ export default function Navbar() {
                 <MenuUI
                   parent={
                     <Menu.Button className="w-4 mr-5 text-xl">
-                      <div className="grid place-items-center rounded-full border-2 shadow-sm w-8 h-8 p-1 hover:border-yellow-400">
+                      <div className="grid place-items-center rounded-full border-2 shadow-sm w-8 h-8 p-0 hover:border-yellow-400">
                         <Image
                           src={
-                            "https://d1tl44nezj10jx.cloudfront.net/assets/logo_square.svg"
+                            user && user.photo
+                              ? user.photo
+                              : "https://d1tl44nezj10jx.cloudfront.net/assets/logo_square.svg"
                           }
                           height={60}
                           width={60}
-                          className="h-full"
-                          alt="oruphones"
+                          className="h-full rounded-full"
+                          alt="Your Profile Photo"
                         />
                       </div>
                     </Menu.Button>

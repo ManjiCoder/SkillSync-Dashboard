@@ -7,15 +7,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(req.query);
-  // res.redirect("/connections/manji");
-  // console.log(req.headers["x-auth-token"]);
+  const formFields: any = ["photo", "name"];
+
+  const key = Object.keys(req.query)[0];
+  const value = req.query[key];
+
   const id = req.headers["x-user-id"];
   await dbConnect();
 
   const user: any = await UserModel.findByIdAndUpdate(id, {
     $set: {
-      photo: null,
+      [key]: value,
     },
   });
   res.status(200).json({ user });

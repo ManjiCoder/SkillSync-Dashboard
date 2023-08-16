@@ -33,10 +33,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       "x-auth-token": token,
     };
 
-    let response = await fetch("http://localhost:3000/api/connections/getall", {
-      method: "GET",
-      headers: headersList,
-    });
+    let response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/connections/getall`,
+      {
+        method: "GET",
+        headers: headersList,
+      }
+    );
 
     let data = await response.json();
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { EditButton } from "./FormHelper";
+import { AddButton, EditButton } from "./FormHelper";
 import { AiFillStar } from "react-icons/ai";
 import UploadImage from "./UploadImage";
 import { PersistGate } from "redux-persist/integration/react";
@@ -10,7 +10,7 @@ export default function ProfileInfo() {
   const { user } = useSelector((state: any) => state.user);
   console.log(user);
   const basicUserInfo = [
-    { key: "Your Name", value: user?.name },
+    { key: "Name", value: user?.name },
     { key: "Email", value: user?.email },
     { key: "Phone Number", value: user?.phoneNumber },
   ];
@@ -27,7 +27,6 @@ export default function ProfileInfo() {
             <div className="grid lg:grid-cols-2 lg:px-7 lg:py-9 lg:gap-x-16 max-lg:gap-3">
               {/* Profile Left Section */}
               <div className="max-lg:bg-white max-lg:p-3.5 max-lg:shadow-md max-lg:rounded-lg flex flex-col gap-y-8">
-                {/* Profile Image */}
                 <UploadImage />
 
                 {/* Basic Info */}
@@ -41,7 +40,7 @@ export default function ProfileInfo() {
                         <h1>{key}</h1>
                         <h1 className="font-semibold">{value}</h1>
                       </div>
-                      <EditButton />
+                      {value ? <EditButton updateField={key} /> : <AddButton />}
                     </div>
                   ))}
                 </section>
@@ -53,7 +52,7 @@ export default function ProfileInfo() {
                       About{" "}
                       <span className="text-indigo-600">{user?.name}</span>
                     </h1>
-                    <EditButton />
+                    {user?.bio ? <EditButton /> : <AddButton />}
                   </div>
                   <p className="font-semibold">{user?.bio}</p>
                 </section>
@@ -62,10 +61,13 @@ export default function ProfileInfo() {
                 <section className="border p-4 flex flex-col gap-y-3 rounded-md shadow-md">
                   <div className="flex justify-between items-center">
                     <h1 className="text-xl font-medium">Skill</h1>
-                    <EditButton />
+                    <AddButton />
                   </div>
                   {user?.skills?.map((skill: string) => (
-                    <p key={skill}>{skill}</p>
+                    <div key={skill}>
+                      <p>{skill}</p>
+                      {skill ? <EditButton /> : <AddButton />}
+                    </div>
                   ))}
                 </section>
               </div>
@@ -73,7 +75,7 @@ export default function ProfileInfo() {
               <div className="max-lg:bg-white max-lg:p-3.5 max-lg:shadow-md max-lg:rounded-lg flex flex-col gap-y-8">
                 {/* Professional Info */}
                 <section className="border p-4 flex items-center gap-y-6 rounded-md shadow-md">
-                  <div className="flex flex-col gap-y-3">
+                  <div className="flex flex-1 flex-col gap-y-3">
                     <h1 className="text-xl font-bold">Professional Details</h1>
                     <p className="font-semibold">{user?.professionalDetails}</p>
                   </div>
@@ -81,6 +83,8 @@ export default function ProfileInfo() {
                     <AiFillStar className="text-5xl text-cyan-400 rotate-6" />
                     <AiFillStar className="text-3xl  text-blue-800 -translate-y-10" />
                   </div>
+                  {user?.professionalDetails ? <EditButton /> : <AddButton />}
+
                   {/* <div className="flex items-center flex-col">
                   <AiFillStar className="text-5xl text-cyan-400 rotate-12" />
                   <AiFillStar className="text-4xl  text-blue-800 -translate-y-8 translate-x-2.5 -rotate-12" />
@@ -90,7 +94,7 @@ export default function ProfileInfo() {
                 {/* Certifications */}
                 <div className="flex justify-between items-center">
                   <h1 className="text-xl font-bold">Certifications</h1>
-                  <EditButton />
+                  <AddButton />
                 </div>
                 {/* Certifications */}
                 {user?.certifications?.map(({ course, from }: any) => (
@@ -108,13 +112,14 @@ export default function ProfileInfo() {
                         <h3>{from}</h3>
                       </div>
                     </div>
+                    {user?.course ? <EditButton /> : <AddButton />}
                   </section>
                 ))}
 
                 {/* Experience */}
                 <div className="flex justify-between items-center">
                   <h1 className="text-xl font-bold">Experience</h1>
-                  <EditButton />
+                  <AddButton />
                 </div>
 
                 {/* Experience */}
@@ -140,6 +145,7 @@ export default function ProfileInfo() {
                         <h3>{companyName}</h3>
                         <h3>--{role}</h3>
                       </div>
+                      {user?.companyName ? <EditButton /> : <AddButton />}
                     </section>
                   )
                 )}
@@ -147,7 +153,7 @@ export default function ProfileInfo() {
                 {/* Education */}
                 <div className="flex justify-between items-center">
                   <h1 className="text-xl font-bold">Education</h1>
-                  <EditButton />
+                  <AddButton />
                 </div>
 
                 {/* Education */}
@@ -169,6 +175,7 @@ export default function ProfileInfo() {
                         <h3 className="font-bold">{course}</h3>
                       </div>
                       <p>{bio}</p>
+                      {user?.course ? <EditButton /> : <AddButton />}
                     </section>
                   )
                 )}

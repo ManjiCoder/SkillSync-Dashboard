@@ -30,9 +30,15 @@ export default function Header() {
           </button>
           <div className="h-14 flex space-x-3 place-items-center font-medium rounded-md shadow-md border p-3">
             <Image
+              src={
+                user && user.photo
+                  ? user.photo
+                  : "https://d1tl44nezj10jx.cloudfront.net/assets/logo_square.svg"
+              }
+              height={50}
+              width={50}
+              alt="Your Profile Photo"
               className="bg-slate-300 w-9 h-9 shadow-sm rounded-md"
-              src={""}
-              alt=""
             />
 
             <div className="flex w-32 flex-col flex-1 font-semibold text-indigo-600">

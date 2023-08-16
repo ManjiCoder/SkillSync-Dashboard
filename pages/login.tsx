@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logIn } from "@/redux-slices/User";
 import ErrorMessage from "@/components/ErrorMessage";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import BrandImage from "@/components/BrandImage";
 
 export default function Login() {
   const { toastDuration } = useSelector((state: any) => state.static);
@@ -74,13 +75,7 @@ export default function Login() {
       <HeaderSEO description={null} title="Login | SkillSync Dashboard" />
       <main className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <Image
-            src={"https://d1tl44nezj10jx.cloudfront.net/assets/logo_square.svg"}
-            alt="Your Company"
-            height={50}
-            width={50}
-            className="mx-auto h-10 w-auto"
-          />
+          <BrandImage />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Login to your account
           </h2>
