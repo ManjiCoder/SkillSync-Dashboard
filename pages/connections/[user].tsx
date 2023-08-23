@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { GetServerSideProps } from "next";
 import { destroyCookie } from "nookies";
 
@@ -6,8 +6,19 @@ import Sidebar from "@/components/Sidebar";
 import HeaderSEO from "@/components/HeaderSEO";
 import ConnectionsInfo from "@/components/ConnectionInfo";
 import Header from "@/components/Header";
+import { useDispatch } from "react-redux";
+import { logIn } from "@/redux-slices/User";
 
-export default function Profile({ userName }: any) {
+export default function Profile({ user }: any) {
+  let userName: any = user.name;
+  userName = userName.split("");
+  userName[0] = userName[0].toUpperCase();
+  userName = userName.join("");
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(logIn(user));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <HeaderSEO

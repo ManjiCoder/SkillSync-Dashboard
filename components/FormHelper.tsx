@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalUI from "./headlessUI/ModalUI";
 import ErrorMessage from "./ErrorMessage";
 import { Formik } from "formik";
@@ -6,13 +6,10 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import { editName } from "@/redux-slices/User";
+import { editName, logIn } from "@/redux-slices/User";
 
-const EditNameSchema = Yup.object().shape({
-  name: Yup.string()
-    .required("Name is required")
-    .min(3, "Your should be atleast 3 characters")
-    .max(100, "Enter your nickname"),
+const updateSchema = Yup.object().shape({
+  name: Yup.string().required("*required"),
 });
 export function EditButton({ updateField }: any) {
   const [showModal, setShowModal] = useState(false);
@@ -54,12 +51,15 @@ export function AddButton() {
 
 export function From({ updateField, closeModal }: any) {
   const { toastDuration } = useSelector((state: any) => state.static);
+  const { user } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
+  useEffect(() => {
+    console.log(user?.name);
+  }, [user]);
 
   const uploadPhotoDB = async (updateFieldValue: string) => {
     const toastId = toast.loading("Please wait...");
-    dispatch(editName(updateFieldValue));
-    // API Call
+
     let headersList: any = {
       "x-auth-token": Cookies.get("token"),
     };
@@ -83,14 +83,15 @@ export function From({ updateField, closeModal }: any) {
       closeButton: true,
       closeOnClick: true,
     });
-    console.log({ data });
+    dispatch(editName(updateFieldValue));
+    console.log("edited:", updateFieldValue, data.user.name);
   };
 
   return (
     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
       <Formik
-        initialValues={{ name: "" }}
-        validationSchema={EditNameSchema}
+        initialValues={{ name: user.name }}
+        validationSchema={updateSchema}
         onSubmit={(values) => {
           console.log(values.name);
           uploadPhotoDB(values.name);
@@ -105,7 +106,7 @@ export function From({ updateField, closeModal }: any) {
           isValid,
           /* and other goodies */
         }) => (
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6">
             <div>
               <label
                 htmlFor="name"
@@ -131,10 +132,13 @@ export function From({ updateField, closeModal }: any) {
             <div>
               <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                 <button
-                  type="button"
+                  type="submit"
                   disabled={!isValid}
                   className="inline-flex w-full justify-center rounded-md bg-slate-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 sm:ml-3 sm:w-auto"
-                  onClick={closeModal}
+                  onClick={() => {
+                    closeModal();
+                    handleSubmit();
+                  }}
                 >
                   Update
                 </button>

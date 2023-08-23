@@ -1,7 +1,7 @@
 import React from "react";
 
 type ErrorProps = {
-  error: string | undefined;
+  error: string | undefined | any;
 };
 export default function ErrorMessage({ error }: ErrorProps) {
   return (

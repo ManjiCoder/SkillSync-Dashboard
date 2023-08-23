@@ -15,7 +15,6 @@ export default function UploadImage() {
     setShowModal(false);
   };
   useEffect(() => {
-    console.log(user);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image, user]);
 

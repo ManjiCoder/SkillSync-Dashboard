@@ -19,8 +19,8 @@ const User = createSlice({
       return { ...state.user, photo: action.payload };
     },
     editName(state, action) {
-      console.log(action.payload);
-      return { ...state.user, name: action.payload };
+      state.user.name = action.payload;
+      console.log(action.payload, state.user.name);
     },
   },
 });

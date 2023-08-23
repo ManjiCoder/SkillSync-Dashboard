@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AddButton, EditButton } from "./FormHelper";
 import { AiFillStar } from "react-icons/ai";
 import UploadImage from "./UploadImage";
@@ -8,15 +8,19 @@ import { useSelector } from "react-redux";
 
 export default function ProfileInfo() {
   const { user } = useSelector((state: any) => state.user);
-  console.log(user);
+
   const basicUserInfo = [
     { key: "Name", value: user?.name },
     { key: "Email", value: user?.email },
     { key: "Phone Number", value: user?.phoneNumber },
   ];
 
+  useEffect(() => {
+    console.log(user?.name, "mark");
+  }, [user]);
+
   return (
-    <PersistGate loading={null} persistor={persistor}>
+    <PersistGate persistor={persistor}>
       <section className="flex flex-col items-center flex-1 border-t-2 pt-5 pb-2.5 bg-slate-100">
         <div className="bg-blue-900 rounded-lg shadow-lg min-h-[12rem] w-11/12 p-4 text-white">
           <h2 className="text-xl uppercase font-semibold">My Profile</h2>

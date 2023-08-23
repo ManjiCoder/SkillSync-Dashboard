@@ -15,10 +15,16 @@ export default function Profile({ user }: any) {
   userName[0] = userName[0].toUpperCase();
   userName = userName.join("");
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(logIn(user));
+    console.log("login");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    console.log(user?.name, "[user]");
+  }, [user]);
 
   return (
     <>
@@ -27,6 +33,7 @@ export default function Profile({ user }: any) {
         description={null}
       />
       <Header />
+
       <main className="flex">
         <Sidebar />
         <ProfileInfo />
