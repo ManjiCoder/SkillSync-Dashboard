@@ -12,7 +12,7 @@ export default async function handler(
   const { body } = req;
   const key = Object.keys(body)[0];
   const value = body[key];
-  console.log({ key, value }, body);
+  // console.log({ key, value }, body);
 
   if (method === "POST" && formFields.has(key)) {
     try {

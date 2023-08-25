@@ -1,7 +1,10 @@
 // Using in Both Client & Server For Validation
 import {
   bioSchema,
+  certificationSchema,
+  educationSchema,
   emailSchema,
+  experienceSchema,
   nameSchema,
   phoneNumberSchema,
   photoSchema,
@@ -39,23 +42,19 @@ formFields.set("skills", {
   fieldName: "skills",
   isArray: true,
 });
-formFields.set("professtionalDetail", {
-  fieldValidation: null,
-  fieldName: "Professtional Detail",
-  isArray: false,
-});
+
 formFields.set("certification", {
-  fieldValidation: null,
+  fieldValidation: certificationSchema,
   fieldName: "Certification",
   isArray: true,
 });
 formFields.set("experience", {
-  fieldValidation: null,
+  fieldValidation: experienceSchema,
   fieldName: "Experience",
   isArray: true,
 });
 formFields.set("education", {
-  fieldValidation: null,
+  fieldValidation: educationSchema,
   fieldName: "Education",
   isArray: true,
 });

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadPhoto } from "@/redux-slices/User";
 import ModalUI from "./headlessUI/ModalUI";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import { updateField } from "@/redux-slices/User";
 
 export default function UploadImage() {
   const { user } = useSelector((state: any) => state.user);
@@ -104,7 +104,7 @@ export function UploadImageModal({ closeModal, image, setImage }: any) {
       .then((res) => res.json())
       .then((data) => {
         console.log(data.secure_url);
-        dispatch(uploadPhoto(data.secure_url));
+        dispatch(updateField({ photo: data.secure_url }));
         uploadPhotoDB(data.secure_url, toastId);
         closeModal();
       })

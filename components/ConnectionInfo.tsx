@@ -46,10 +46,12 @@ export default function ConnectionsInfo() {
               <h2 className="font-bold text-[1.2rem] my-2.5">{name}</h2>
               <h2>{role}</h2>
               <h2 className="mb-4">{`@ ${companyName}`}</h2>
-              <EditButton />
+              <EditButton fieldKey={name} />
             </div>
             <Image
-              src={""}
+              src={
+                "https://d1tl44nezj10jx.cloudfront.net/assets/logo_square.svg"
+              }
               alt=""
               height={100}
               width={100}

@@ -91,6 +91,17 @@ export const skillsSchema = Yup.object().shape({
   }),
 });
 
+export const certificationSchema = Yup.object().shape({
+  title: Yup.string().required("Certification title is required").trim(),
+  issuingOrganization: Yup.string()
+    .required("Issuing organization is required")
+    .trim(),
+  issueDate: Yup.date().required("Issue date is required"),
+  expirationDate: Yup.date().nullable(),
+  credentialID: Yup.string().trim(),
+  description: Yup.string().trim(),
+});
+
 export const experienceSchema = Yup.object().shape({
   title: Yup.string().required("Experience title is required").trim(),
   company: Yup.string().required("Company name is required").trim(),
