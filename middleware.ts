@@ -9,7 +9,7 @@ export async function middleware(req: NextRequest) {
     const token = req.headers.get("x-auth-token");
     const payload: any = await verify(token, process.env.JWT_PRIVATE_KEY);
     const { id } = payload.userId;
-    console.log(id);
+    // console.log(id);
     const response = NextResponse.next();
     response.headers.set("x-user-id", id);
     return response;
@@ -26,6 +26,7 @@ export const config = {
   matcher: [
     "/api/profile/get",
     "/api/profile/add",
+    "/api/profile/update",
     "/api/connections/getall",
     "/api/connections/add",
     "/api/connections/update",

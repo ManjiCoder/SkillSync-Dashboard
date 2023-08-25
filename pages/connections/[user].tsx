@@ -10,10 +10,6 @@ import { useDispatch } from "react-redux";
 import { logIn } from "@/redux-slices/User";
 
 export default function Profile({ user }: any) {
-  let userName: any = user.name;
-  userName = userName.split("");
-  userName[0] = userName[0].toUpperCase();
-  userName = userName.join("");
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(logIn(user));
@@ -22,7 +18,7 @@ export default function Profile({ user }: any) {
   return (
     <>
       <HeaderSEO
-        title={`${userName} Connections | SkillSync Dashboard `}
+        title={`${user.userName} Connections | SkillSync Dashboard `}
         description={null}
       />
       <Header />

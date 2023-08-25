@@ -2,42 +2,120 @@ import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema(
   {
-    photo: { type: String, default: null },
+    photo: { type: String, default: null, trim: true },
+    userName: { type: String, required: true, trim: true },
     name: { type: String, required: true },
-    email: { type: String, required: true },
-    role: { type: String, default: "user" },
-    password: { type: String, required: true },
+    email: { type: String, required: true, lowercase: true, trim: true },
+    role: {
+      type: String,
+      enum: ["Admin", "User", "Moderator"],
+      default: "User",
+    },
+    password: { type: String, required: true, trim: true },
     phoneNumber: { type: Number },
-    bio: String, // String is shorthand for {type: String}
-    skills: [String],
-
-    professtionalDetail: String,
+    bio: { type: String, trim: true }, // String is shorthand for {type: String}
+    skills: [
+      {
+        name: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        proficiency: {
+          type: String,
+          enum: ["Beginner", "Intermediate", "Advanced", "Expert"],
+          default: "Beginner",
+        },
+      },
+    ],
     certification: [
       {
-        courseName: String,
-        by: String,
+        title: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        issuingOrganization: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        issueDate: {
+          type: Date,
+          required: true,
+        },
+        expirationDate: {
+          type: Date,
+          default: null, // Set to null if still valid
+        },
+        credentialID: {
+          type: String,
+          trim: true,
+        },
+        description: {
+          type: String,
+          trim: true,
+        },
       },
     ],
     experience: [
       {
-        company: String,
-        role: String,
-        duration: {
-          from: { type: Date },
-          to: { type: Date },
+        title: {
+          type: String,
+          required: true,
+          trim: true,
         },
-        description: String,
+        company: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        location: {
+          type: String,
+          trim: true,
+        },
+        startDate: {
+          type: Date,
+          required: true,
+        },
+        endDate: {
+          type: Date,
+          default: null, // Set to null if currently working
+        },
+        description: {
+          type: String,
+          trim: true,
+        },
       },
     ],
     education: [
       {
-        university: String,
-        courseName: String,
-        duration: {
-          from: { type: Date },
-          to: { type: Date },
+        degree: {
+          type: String,
+          required: true,
+          trim: true,
         },
-        description: String,
+        institution: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        location: {
+          type: String,
+          trim: true,
+        },
+        startDate: {
+          type: Date,
+          required: true,
+        },
+        endDate: {
+          type: Date,
+          default: null, // Set to null if currently pursuing
+        },
+        description: {
+          type: String,
+          trim: true,
+        },
       },
     ],
   },

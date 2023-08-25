@@ -10,10 +10,6 @@ import HeaderSEO from "@/components/HeaderSEO";
 import Header from "@/components/Header";
 
 export default function Profile({ user }: any) {
-  let userName: any = user.name;
-  userName = userName.split("");
-  userName[0] = userName[0].toUpperCase();
-  userName = userName.join("");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,7 +25,7 @@ export default function Profile({ user }: any) {
   return (
     <>
       <HeaderSEO
-        title={`${userName} Profile | SkillSync Dashboard `}
+        title={`${user.userName} Profile | SkillSync Dashboard `}
         description={null}
       />
       <Header />
@@ -46,7 +42,6 @@ export default function Profile({ user }: any) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { token } = context.req.cookies;
-
   if (token) {
     let headersList: any = {
       "x-auth-token": token,
@@ -62,6 +57,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     let data = await response.json();
 
+    if (
+      context.query.user?.toString().toLowerCase() !==
+      data.user.userName.toLowerCase()
+    ) {
+      return {
+        redirect: {
+          destination: "/404",
+          permanent: false,
+        },
+      };
+    }
     return { props: { user: data.user } };
   }
   destroyCookie(context, "token");

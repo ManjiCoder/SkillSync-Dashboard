@@ -1,100 +1,84 @@
-import React, { useEffect, useState } from "react";
-import ModalUI from "./headlessUI/ModalUI";
-import ErrorMessage from "./ErrorMessage";
-import { Formik } from "formik";
-import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import { editName, logIn } from "@/redux-slices/User";
+import { updateField } from "@/redux-slices/User";
+import { Formik } from "formik";
+import ErrorMessage from "./ErrorMessage";
+import { formFields } from "@/utils/form";
 
-const updateSchema = Yup.object().shape({
-  name: Yup.string().required("*required"),
-});
-export function EditButton({ updateField }: any) {
-  const [showModal, setShowModal] = useState(false);
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
-  return (
-    <>
-      <button
-        className="py-1 text-xs font-medium px-4 rounded-full shadow-sm bg-purple-200"
-        type="button"
-        onClick={() => setShowModal(true)}
-      >
-        Edit
-      </button>
-      {showModal && (
-        <ModalUI
-          isOpen={showModal}
-          closeModal={closeModal}
-          title={`Edit ${updateField}`}
-        >
-          <From updateField={updateField} closeModal={closeModal} />
-        </ModalUI>
-      )}
-    </>
-  );
-}
-export function AddButton() {
-  return (
-    <button
-      className="py-1 text-xs font-medium px-4 rounded-full shadow-sm bg-purple-200"
-      type="button"
-    >
-      Add
-    </button>
-  );
-}
-
-export function From({ updateField, closeModal }: any) {
+type FormProp = {
+  fieldName: string;
+  fieldKey: string;
+  closeModal: any;
+};
+export default function FormHelper({
+  fieldName,
+  fieldKey,
+  closeModal,
+}: FormProp) {
   const { toastDuration } = useSelector((state: any) => state.static);
   const { user } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
-  useEffect(() => {
-    console.log(user?.name);
-  }, [user]);
 
-  const uploadPhotoDB = async (updateFieldValue: string) => {
+  const updateDB = async (updateValue: string) => {
     const toastId = toast.loading("Please wait...");
+    try {
+      const headersList: any = {
+        "x-auth-token": Cookies.get("token"),
+        "Content-Type": "application/json", // This is also IMP without this api call fails
+      };
+      const bodyContent = JSON.stringify({
+        [fieldKey]: updateValue,
+      });
 
-    let headersList: any = {
-      "x-auth-token": Cookies.get("token"),
-    };
-
-    let response = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BASE_URL
-      }/api/profile/add?${updateField.toLowerCase()}=${updateFieldValue}`,
-      {
-        method: "GET",
-        headers: headersList,
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/profile/update`,
+        {
+          method: "POST",
+          headers: headersList,
+          body: bodyContent,
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        dispatch(updateField({ [fieldKey]: updateValue }));
+        toast.update(toastId, {
+          render: data.message,
+          type: "success",
+          isLoading: false,
+          autoClose: toastDuration,
+          closeButton: true,
+          closeOnClick: true,
+        });
+        return;
       }
-    );
-
-    let data = await response.json();
-    toast.update(toastId, {
-      render: data.message || "done",
-      type: "success",
-      isLoading: false,
-      autoClose: toastDuration,
-      closeButton: true,
-      closeOnClick: true,
-    });
-    dispatch(editName(updateFieldValue));
-    console.log("edited:", updateFieldValue, data.user.name);
+      toast.update(toastId, {
+        render: data.message,
+        type: "error",
+        isLoading: false,
+        autoClose: toastDuration,
+        closeButton: true,
+        closeOnClick: true,
+      });
+    } catch (error: any) {
+      toast.update(toastId, {
+        render: error.message || "Internal server error",
+        type: "error",
+        closeButton: true,
+        closeOnClick: true,
+      });
+      console.error(error);
+    }
   };
 
+  // const initialValues = { [fieldKey]: user[fieldKey] };
   return (
     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
       <Formik
-        initialValues={{ name: user.name }}
-        validationSchema={updateSchema}
+        initialValues={{ [fieldKey]: user[fieldKey] }}
+        validationSchema={formFields?.get(fieldKey).fieldValidation}
         onSubmit={(values) => {
-          console.log(values.name);
-          uploadPhotoDB(values.name);
+          updateDB(values[fieldKey]);
         }}
       >
         {({
@@ -109,24 +93,24 @@ export function From({ updateField, closeModal }: any) {
           <form className="space-y-6">
             <div>
               <label
-                htmlFor="name"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                htmlFor={fieldKey}
+                className="block capitalize text-sm font-medium leading-6 text-gray-900"
               >
-                {updateField}
+                {fieldName}
               </label>
               <div className="mt-2">
                 <input
-                  id="name"
+                  id={fieldKey}
                   className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  name="name"
-                  type="text"
-                  autoComplete="email"
+                  name={fieldKey}
+                  type={fieldKey === "phoneNumber" ? "number" : "text"}
+                  autoComplete={fieldKey}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.name}
+                  value={values[fieldKey]}
                 />
               </div>
-              <ErrorMessage error={errors.name} />
+              <ErrorMessage error={errors[fieldKey]} />
             </div>
 
             <div>

@@ -3,39 +3,41 @@ import dbConnect from "@/utils/dbConnect";
 import { pretifyUserInfo, sign } from "@/utils/server-utils";
 import bcrypt from "bcryptjs";
 import { serialize } from "cookie";
-import * as Yup from "yup";
+import { signUpSchema } from "@/lib/Yup";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const signUpSchema = Yup.object().shape({
-  name: Yup.string()
-    .required("Name is required")
-    .max(100, "Enter your nickname"),
-  email: Yup.string()
-    .email("Enter a valid email")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(5, "Password should be atleast 5 characters")
-    .max(30, "Password should be maximum 30 characters"),
-});
-
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "POST") {
     try {
       const body = req.body;
-      const { name, email, password } = body;
+      const { name, email, userName, password } = body;
       if (body === "") {
-        res.status(401).json({ message: "Not allowed!" });
+        res.status(401).json({ status: "error", message: "Not allowed!" });
       }
       // For user-input validation
       await signUpSchema.validate(body, { abortEarly: false });
 
       await dbConnect();
-      const user = await UserModel.findOne({ email });
+      const existingUser = await UserModel.findOne({
+        $or: [{ userName }, { email }],
+      });
 
       // If user have an account
-      if (user) {
-        return res
-          .status(400)
-          .json({ message: "User with this email already exists." });
+      if (existingUser) {
+        let message = "User with this email already exists!";
+        if (existingUser.userName === userName) {
+          message = "This username is already taken!";
+        }
+        if (
+          existingUser.userName === userName &&
+          existingUser.email === email
+        ) {
+          message = "User with this email & username already exists!";
+        }
+        return res.status(400).json({ message });
       }
 
       // Password hashing
@@ -45,6 +47,7 @@ export default async function handler(req, res) {
       // Saving into the db
       const newUser = await UserModel.create({
         name,
+        userName,
         email,
         password: hashPassword,
       });
@@ -73,20 +76,31 @@ export default async function handler(req, res) {
       res.setHeader("Set-Cookie", cookie);
 
       const userInfo = pretifyUserInfo(newUser);
-      res
-        .status(200)
-        .json({ message: "Login Sucessfully", user: userInfo, authToken });
-    } catch (error) {
-      if (error.errors) {
+      res.status(200).json({
+        status: "ok",
+        message: "Login Sucessfully",
+        user: userInfo,
+        authToken,
+      });
+    } catch (error: any) {
+      console.log(error.errors);
+      if (Array.isArray(error.errors)) {
+        let n: number = error.errors.length;
+        let lastItem = "";
+        if (n > 1) {
+          lastItem = " & " + error.errors.pop().trim();
+        }
         res.status(400).json({
-          message: error.errors.join(" & "),
+          status: "error",
+          message: `${error.errors?.join(", ")} ${lastItem}`,
         });
         return;
       }
-      console.log(error.errors);
-      res
-        .status(401)
-        .json({ message: error.message || "Internal server error" });
+
+      res.status(400).json({
+        status: "error",
+        message: error.message || "Some error occured try later!",
+      });
     }
   }
   // For Invalid Method

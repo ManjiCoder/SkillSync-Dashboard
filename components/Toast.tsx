@@ -3,6 +3,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Toast() {
-  return <ToastContainer className="mt-12" />;
+  return <ToastContainer className="mt-12 capitalize" />;
 }
 export default Toast;

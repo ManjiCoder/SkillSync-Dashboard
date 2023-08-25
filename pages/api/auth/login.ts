@@ -3,33 +3,35 @@ import dbConnect from "@/utils/dbConnect";
 import { pretifyUserInfo, sign } from "@/utils/server-utils";
 import bcrypt from "bcryptjs";
 import { serialize } from "cookie";
-import * as Yup from "yup";
+import { NextApiRequest, NextApiResponse } from "next";
+import { loginSchema } from "@/lib/Yup";
 
-const loginSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Enter a valid email")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(5, "Password should be atleast 5 characters")
-    .max(30, "Password should be maximum 30 characters"),
-});
-
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "POST") {
     try {
       const body = req.body;
-      const { email, password } = body;
+      const { email, userName, password } = body;
+
+      if (body === "") {
+        res.status(401).json({ status: "error", message: "Not allowed!" });
+      }
 
       // For user-input validation
       await loginSchema.validate(body, { abortEarly: false });
 
       await dbConnect();
-      const user = await UserModel.findOne({ email });
+      const user = await UserModel.findOne({ $or: [{ userName }, { email }] });
 
       // If user don't have an account
       if (!user) {
-        res.status(404).json({ message: "Cannot find user with this email" });
-        return;
+        let message = "Cannot find user with this email!";
+        if (user?.userName !== userName) {
+          message = "Cannot find user with this username";
+        }
+        return res.status(400).json({ message });
       }
 
       // Comparing Password
@@ -71,20 +73,31 @@ export default async function handler(req, res) {
         { new: true }
       );
       const userInfo = pretifyUserInfo(loginUser);
-      res
-        .status(200)
-        .json({ message: "Login Sucessfully", user: userInfo, authToken });
-    } catch (error) {
+      res.status(200).json({
+        status: "ok",
+        message: "Login Sucessfully",
+        user: userInfo,
+        authToken,
+      });
+    } catch (error: any) {
       console.log(error.errors);
-      if (error.errors) {
+      if (Array.isArray(error.errors)) {
+        let n: number = error.errors.length;
+        let lastItem = "";
+        if (n > 1) {
+          lastItem = " & " + error.errors.pop().trim();
+        }
         res.status(400).json({
-          message: error.errors.join(" & "),
+          status: "error",
+          message: `${error.errors?.join(", ")} ${lastItem}`,
         });
         return;
       }
-      res
-        .status(401)
-        .json({ message: error.message || "Internal server error" });
+
+      res.status(400).json({
+        status: "error",
+        message: error.message || "Some error occured try later!",
+      });
     }
   }
   // For Invalid Method

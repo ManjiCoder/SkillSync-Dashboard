@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Formik } from "formik";
@@ -25,6 +24,7 @@ export default function SignUp() {
   const handleSignUp = async (
     name: string,
     email: string,
+    userName: string,
     password: string
   ) => {
     const toastId = toast.loading("Please wait...");
@@ -34,7 +34,7 @@ export default function SignUp() {
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/sign-up`,
         {
           method: "POST",
-          body: JSON.stringify({ name, email, password }),
+          body: JSON.stringify({ name, email, userName, password }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -88,10 +88,11 @@ export default function SignUp() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <Formik
-            initialValues={{ name: "", email: "", password: "" }}
+            initialValues={{ name: "", email: "", userName: "", password: "" }}
             validationSchema={signUpSchema}
             onSubmit={(values) => {
-              handleSignUp(values.name, values.email, values.password);
+              const { name, email, userName, password } = values;
+              handleSignUp(name, email, userName, password);
             }}
           >
             {({
@@ -147,6 +148,28 @@ export default function SignUp() {
                     />
                   </div>
                   <ErrorMessage error={errors.email} />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="userName"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    UserName
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="userName"
+                      className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      name="userName"
+                      type="text"
+                      autoComplete="userName"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.userName}
+                    />
+                  </div>
+                  <ErrorMessage error={errors.userName} />
                 </div>
 
                 <div>

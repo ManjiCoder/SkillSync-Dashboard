@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (user) {
       return {
         redirect: {
-          destination: `/profile/${user.name}`,
+          destination: `/profile/${user.userName.toLowerCase()}`,
           permanent: true,
         },
       };

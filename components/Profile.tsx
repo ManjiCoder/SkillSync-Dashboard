@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { AddButton, EditButton } from "./FormHelper";
+import { AddButton, EditButton } from "./FormAction";
 import { AiFillStar } from "react-icons/ai";
 import UploadImage from "./UploadImage";
 import { PersistGate } from "redux-persist/integration/react";
@@ -10,17 +10,13 @@ export default function ProfileInfo() {
   const { user } = useSelector((state: any) => state.user);
 
   const basicUserInfo = [
-    { key: "Name", value: user?.name },
-    { key: "Email", value: user?.email },
-    { key: "Phone Number", value: user?.phoneNumber },
+    { name: "Name", key: "name", value: user?.name },
+    { name: "Email", key: "email", value: user?.email },
+    { name: "Phone Number", key: "phoneNumber", value: user?.phoneNumber },
   ];
 
-  useEffect(() => {
-    console.log(user?.name, "mark");
-  }, [user]);
-
   return (
-    <PersistGate persistor={persistor}>
+    <PersistGate loading={null} persistor={persistor}>
       <section className="flex flex-col items-center flex-1 border-t-2 pt-5 pb-2.5 bg-slate-100">
         <div className="bg-blue-900 rounded-lg shadow-lg min-h-[12rem] w-11/12 p-4 text-white">
           <h2 className="text-xl uppercase font-semibold">My Profile</h2>
@@ -35,16 +31,20 @@ export default function ProfileInfo() {
 
                 {/* Basic Info */}
                 <section className="border p-4 max-lg:-mt-4 flex flex-col gap-y-6 rounded-md shadow-md">
-                  {basicUserInfo.map(({ key, value }) => (
+                  {basicUserInfo.map(({ name, key, value }) => (
                     <div
                       className="flex justify-between items-center"
                       key={key}
                     >
                       <div className="flex flex-col gap-y-3">
-                        <h1>{key}</h1>
+                        <h1>{name}</h1>
                         <h1 className="font-semibold">{value}</h1>
                       </div>
-                      {value ? <EditButton updateField={key} /> : <AddButton />}
+                      {value ? (
+                        <EditButton fieldKey={key} />
+                      ) : (
+                        <AddButton fieldKey={key} />
+                      )}
                     </div>
                   ))}
                 </section>
@@ -56,7 +56,11 @@ export default function ProfileInfo() {
                       About{" "}
                       <span className="text-indigo-600">{user?.name}</span>
                     </h1>
-                    {user?.bio ? <EditButton /> : <AddButton />}
+                    {user.bio ? (
+                      <EditButton fieldKey="bio" />
+                    ) : (
+                      <AddButton fieldKey="bio" />
+                    )}
                   </div>
                   <p className="font-semibold">{user?.bio}</p>
                 </section>
@@ -65,12 +69,16 @@ export default function ProfileInfo() {
                 <section className="border p-4 flex flex-col gap-y-3 rounded-md shadow-md">
                   <div className="flex justify-between items-center">
                     <h1 className="text-xl font-medium">Skill</h1>
-                    <AddButton />
+                    <AddButton fieldKey="skills" />
                   </div>
                   {user?.skills?.map((skill: string) => (
                     <div key={skill}>
                       <p>{skill}</p>
-                      {skill ? <EditButton /> : <AddButton />}
+                      {user.skill.length !== 0 ? (
+                        <EditButton fieldKey="skills" />
+                      ) : (
+                        <AddButton fieldKey="skills" />
+                      )}
                     </div>
                   ))}
                 </section>
@@ -87,7 +95,11 @@ export default function ProfileInfo() {
                     <AiFillStar className="text-5xl text-cyan-400 rotate-6" />
                     <AiFillStar className="text-3xl  text-blue-800 -translate-y-10" />
                   </div>
-                  {user?.professionalDetails ? <EditButton /> : <AddButton />}
+                  {user?.professionalDetails ? (
+                    <EditButton fieldKey="professionalDetails" />
+                  ) : (
+                    <AddButton fieldKey="professionalDetails" />
+                  )}
 
                   {/* <div className="flex items-center flex-col">
                   <AiFillStar className="text-5xl text-cyan-400 rotate-12" />
@@ -98,7 +110,7 @@ export default function ProfileInfo() {
                 {/* Certifications */}
                 <div className="flex justify-between items-center">
                   <h1 className="text-xl font-bold">Certifications</h1>
-                  <AddButton />
+                  <AddButton fieldKey="certifications" />
                 </div>
                 {/* Certifications */}
                 {user?.certifications?.map(({ course, from }: any) => (
@@ -116,14 +128,18 @@ export default function ProfileInfo() {
                         <h3>{from}</h3>
                       </div>
                     </div>
-                    {user?.course ? <EditButton /> : <AddButton />}
+                    {user?.course ? (
+                      <EditButton fieldKey="course" />
+                    ) : (
+                      <AddButton fieldKey="course" />
+                    )}
                   </section>
                 ))}
 
                 {/* Experience */}
                 <div className="flex justify-between items-center">
                   <h1 className="text-xl font-bold">Experience</h1>
-                  <AddButton />
+                  <AddButton fieldKey="experience" />
                 </div>
 
                 {/* Experience */}
@@ -149,7 +165,11 @@ export default function ProfileInfo() {
                         <h3>{companyName}</h3>
                         <h3>--{role}</h3>
                       </div>
-                      {user?.companyName ? <EditButton /> : <AddButton />}
+                      {user?.companyName ? (
+                        <EditButton fieldKey="experience" />
+                      ) : (
+                        <AddButton fieldKey="experience" />
+                      )}
                     </section>
                   )
                 )}
@@ -157,7 +177,7 @@ export default function ProfileInfo() {
                 {/* Education */}
                 <div className="flex justify-between items-center">
                   <h1 className="text-xl font-bold">Education</h1>
-                  <AddButton />
+                  <AddButton fieldKey="education" />
                 </div>
 
                 {/* Education */}
@@ -179,7 +199,11 @@ export default function ProfileInfo() {
                         <h3 className="font-bold">{course}</h3>
                       </div>
                       <p>{bio}</p>
-                      {user?.course ? <EditButton /> : <AddButton />}
+                      {user?.course ? (
+                        <EditButton fieldKey="education" />
+                      ) : (
+                        <AddButton fieldKey="education" />
+                      )}
                     </section>
                   )
                 )}

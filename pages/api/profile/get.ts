@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import UserModel from "@/models/User";
 import dbConnect from "@/utils/dbConnect";
 import { pretifyUserInfo } from "@/utils/server-utils";
@@ -8,11 +7,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // res.redirect("/connections/manji");
-  // console.log(req.headers["x-auth-token"]);
-  const id = req.headers["x-user-id"];
-  await dbConnect();
+  const { method } = req;
+  if (method === "GET") {
+    const id = req.headers["x-user-id"];
+    await dbConnect();
 
-  const user = await UserModel.findById(id);
-  res.status(200).json({ user: pretifyUserInfo(user) });
+    const user = await UserModel.findById(id);
+    res.status(200).json({ status: "ok", user: pretifyUserInfo(user) });
+  } else {
+    res.status(405).json({ message: "Not Allowed!" });
+  }
 }
