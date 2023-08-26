@@ -25,7 +25,7 @@ export default function Profile({ user }: any) {
   return (
     <>
       <HeaderSEO
-        title={`${user.userName} Profile | SkillSync Dashboard `}
+        title={`${user.userName} | SkillSync Dashboard `}
         description={null}
       />
       <Header />

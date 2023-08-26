@@ -54,10 +54,7 @@ export const nameSchema = Yup.object().shape({
 });
 
 export const photoSchema = Yup.object().shape({
-  photo: Yup.string()
-    .trim()
-    .url("Invalid URL format")
-    .required("Photo URL is required"),
+  photo: Yup.string().trim().default(null).nullable().url("Invalid URL format"),
 });
 
 export const emailSchema = Yup.object().shape({
@@ -83,12 +80,10 @@ export const bioSchema = Yup.object().shape({
 });
 
 export const skillsSchema = Yup.object().shape({
-  skills: Yup.object().shape({
-    name: Yup.string().required("Skill name is required").trim(),
-    proficiency: Yup.string()
-      .oneOf(["Beginner", "Intermediate", "Advanced", "Expert"])
-      .default("Beginner"),
-  }),
+  name: Yup.string().required("Skill name is required").trim(),
+  proficiency: Yup.string()
+    .oneOf(["Beginner", "Intermediate", "Advanced", "Expert"])
+    .default("Beginner"),
 });
 
 export const certificationSchema = Yup.object().shape({

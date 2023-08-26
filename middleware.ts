@@ -3,8 +3,7 @@ import { verify } from "./utils/server-utils";
 
 export async function middleware(req: NextRequest) {
   // const { pathname } = req.nextUrl;
-  console.log(req.headers.get("x-auth-token"));
-  // console.log(req.headers.get("auth-token"));
+  // console.log(req.headers.get("x-auth-token"));
   try {
     const token = req.headers.get("x-auth-token");
     const payload: any = await verify(token, process.env.JWT_PRIVATE_KEY);

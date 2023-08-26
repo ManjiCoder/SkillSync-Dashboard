@@ -13,7 +13,7 @@ export default async function handler(
   if (req.method === "POST") {
     try {
       const body = req.body;
-      const { email, userName, password } = body;
+      const { email, password } = body;
 
       if (body === "") {
         res.status(401).json({ status: "error", message: "Not allowed!" });
@@ -23,14 +23,11 @@ export default async function handler(
       await loginSchema.validate(body, { abortEarly: false });
 
       await dbConnect();
-      const user = await UserModel.findOne({ $or: [{ userName }, { email }] });
+      const user = await UserModel.findOne({ email });
 
       // If user don't have an account
       if (!user) {
         let message = "Cannot find user with this email!";
-        if (user?.userName !== userName) {
-          message = "Cannot find user with this username";
-        }
         return res.status(400).json({ message });
       }
 

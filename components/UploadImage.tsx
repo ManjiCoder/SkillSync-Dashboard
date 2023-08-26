@@ -66,13 +66,17 @@ export function UploadImageModal({ closeModal, image, setImage }: any) {
     // API Call
     let headersList: any = {
       "x-auth-token": Cookies.get("token"),
+      "Content-Type": "application/json",
     };
-
+    let bodyContent = JSON.stringify({
+      photo: imageUrl,
+    });
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/profile/add?photo=${imageUrl}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/profile/update`,
       {
-        method: "GET",
+        method: "POST",
         headers: headersList,
+        body: bodyContent,
       }
     );
 

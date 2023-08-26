@@ -1,7 +1,6 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import store from "../store";
-import Header from "@/components/Header";
 import Toast from "@/components/Toast";
 import { Provider } from "react-redux";
 import { useRouter } from "next/router";
