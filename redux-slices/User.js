@@ -20,9 +20,19 @@ const User = createSlice({
       const key = Object.keys(payload);
       state.user[key] = payload[key];
     },
+    deleteField(state, action) {
+      console.log(1, action.payload);
+      const { payload } = action;
+      const key = Object.keys(payload);
+      const deleteIndex = state.user[key].findIndex(
+        (obj) => obj._id.toString() === payload
+      );
+
+      state.user[key].splice(deleteIndex);
+    },
   },
 });
 
-export const { logIn, logOut, updateField } = User.actions;
+export const { logIn, logOut, updateField, deleteField } = User.actions;
 
 export default User.reducer;

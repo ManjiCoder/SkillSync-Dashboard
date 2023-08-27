@@ -66,7 +66,7 @@ export default async function handler(
           });
         }
         user = await UserModel.findByIdAndUpdate(id, {
-          $addToSet: {
+          $push: {
             [key]: [value],
           },
         });

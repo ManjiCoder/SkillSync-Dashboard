@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import { updateField } from "@/redux-slices/User";
+import { deleteField, updateField } from "@/redux-slices/User";
 import { Formik } from "formik";
 import ErrorMessage from "./ErrorMessage";
 import { formFields } from "@/utils/form";
@@ -9,6 +9,15 @@ import { formFields } from "@/utils/form";
 type FormProp = {
   fieldName: string;
   fieldKey: string;
+  closeModal: any;
+};
+
+type DeleteModalContentProps = {
+  deleteElement: {
+    name: string | null;
+    fieldName: string;
+    id: string;
+  };
   closeModal: any;
 };
 export default function FormHelper({
@@ -72,11 +81,12 @@ export default function FormHelper({
   };
 
   // const initialValues = { [fieldKey]: user[fieldKey] };
+  console.log(formFields?.get(fieldKey));
   return (
     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
       <Formik
         initialValues={{ [fieldKey]: user[fieldKey] }}
-        validationSchema={formFields?.get(fieldKey).fieldValidation}
+        validationSchema={formFields?.get(fieldKey)?.fieldValidation}
         onSubmit={(values) => {
           updateDB(values[fieldKey]);
         }}
@@ -139,5 +149,94 @@ export default function FormHelper({
         )}
       </Formik>
     </div>
+  );
+}
+
+export function DeleteModalContent({
+  deleteElement,
+  closeModal,
+}: DeleteModalContentProps) {
+  const { fieldName, name, id } = deleteElement;
+  const { toastDuration } = useSelector((state: any) => state.static);
+  const dispatch = useDispatch();
+
+  const handleDelete = async (id: string) => {
+    const toastId = toast.loading("Please wait...");
+    try {
+      const headersList: any = {
+        "x-auth-token": Cookies.get("token"),
+        "Content-Type": "application/json",
+      };
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/profile/remove?${fieldName}=${id}`,
+        {
+          method: "PATCH",
+          headers: headersList,
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        dispatch(deleteField({ [fieldName]: id }));
+        toast.update(toastId, {
+          render: data.message,
+          type: "success",
+          isLoading: false,
+          autoClose: toastDuration,
+          closeButton: true,
+          closeOnClick: true,
+        });
+        return;
+      }
+      toast.update(toastId, {
+        render: data.message,
+        type: "error",
+        isLoading: false,
+        autoClose: toastDuration,
+        closeButton: true,
+        closeOnClick: true,
+      });
+    } catch (error: any) {
+      toast.update(toastId, {
+        render: error.message || "Internal server error",
+        type: "error",
+        closeButton: true,
+        closeOnClick: true,
+      });
+      console.error(error);
+    }
+  };
+
+  return (
+    <>
+      <div className="mt-2">
+        <p className="text-sm text-gray-500">
+          Are you sure you want to delete your {name} Skill? All of your data
+          will be permanently removed. This action cannot be undone.
+        </p>
+      </div>
+
+      <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+        <button
+          type="button"
+          className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+          onClick={() => {
+            handleDelete(id);
+            closeModal();
+          }}
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+          onClick={closeModal}
+        >
+          Cancel
+        </button>
+      </div>
+    </>
   );
 }

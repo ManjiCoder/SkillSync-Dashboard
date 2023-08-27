@@ -26,6 +26,7 @@ export const config = {
     "/api/profile/get",
     "/api/profile/add",
     "/api/profile/update",
+    "/api/profile/remove",
     "/api/connections/getall",
     "/api/connections/add",
     "/api/connections/update",

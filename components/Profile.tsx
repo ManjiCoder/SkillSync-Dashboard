@@ -1,5 +1,5 @@
 import React from "react";
-import { AddButton, EditButton } from "./FormAction";
+import { AddButton, DeleteButton, EditButton } from "./FormAction";
 import { AiFillStar } from "react-icons/ai";
 import UploadImage from "./UploadImage";
 import { useSelector } from "react-redux";
@@ -7,6 +7,13 @@ import { useSelector } from "react-redux";
 export interface Skill {
   name: string;
   proficiency: string;
+  _id: string;
+}
+export interface Certification {
+  title: string;
+  issuingOrganization: string;
+  issueDate: Date;
+  expirationDate: null;
   _id: string;
 }
 
@@ -75,11 +82,13 @@ export default function ProfileInfo() {
                     <p className="font-medium">
                       {`${name}`} <span> - {proficiency}</span>
                     </p>
-                    {user.skills.length !== 0 ? (
+                    <div className="flex space-x-2">
                       <EditButton fieldKey="skills" />
-                    ) : (
-                      <AddButton fieldKey="skills" />
-                    )}
+
+                      <DeleteButton
+                        deleteElement={{ name, id: _id, fieldName: "skills" }}
+                      />
+                    </div>
                   </div>
                 ))}
               </section>
@@ -114,31 +123,44 @@ export default function ProfileInfo() {
               {/* Certifications */}
               <div className="flex justify-between items-center">
                 <h1 className="text-xl font-bold">Certifications</h1>
-                <AddButton fieldKey="certifications" />
+                <AddButton fieldKey="certification" />
               </div>
               {/* Certifications */}
-              {user?.certifications?.map(({ course, from }: any) => (
-                <section
-                  key={course}
-                  className="border-2 p-4 flex flex-col -mt-4 gap-y-3 rounded-full shadow-md"
-                >
-                  <div className="flex items-center">
-                    {/* Icon */}
-                    <span className="text-2xl text-white bg-[gold] rounded-full shadow-sm p-1.5">
-                      <AiFillStar />
-                    </span>
-                    <div className="flex flex-col flex-1 text-center">
-                      <h3>{course}</h3>
-                      <h3>{from}</h3>
+              {user.certification?.map(
+                ({
+                  _id,
+                  title,
+                  issueDate,
+                  issuingOrganization,
+                  expirationDate,
+                }: Certification) => (
+                  <div key={_id}>
+                    <section className="border-2 p-4 flex flex-col -mt-4 gap-y-3 rounded-full shadow-md">
+                      <div className="flex items-center">
+                        {/* Icon */}
+                        <span className="text-2xl text-white bg-[gold] rounded-full shadow-sm p-1.5">
+                          <AiFillStar />
+                        </span>
+                        <div className="flex flex-col flex-1 text-center">
+                          <h3>{title}</h3>
+                          <h3>{issuingOrganization}</h3>
+                        </div>
+                      </div>
+                    </section>
+                    <div className="flex space-x-2">
+                      <EditButton fieldKey="skills" />
+
+                      <DeleteButton
+                        deleteElement={{
+                          name: null,
+                          id: _id,
+                          fieldName: "certification",
+                        }}
+                      />
                     </div>
                   </div>
-                  {user?.course ? (
-                    <EditButton fieldKey="course" />
-                  ) : (
-                    <AddButton fieldKey="course" />
-                  )}
-                </section>
-              ))}
+                )
+              )}
 
               {/* Experience */}
               <div className="flex justify-between items-center">
@@ -184,7 +206,7 @@ export default function ProfileInfo() {
               {/* Education */}
               {user?.education?.map(
                 (
-                  { universityName, course, bio, from, to }: any,
+                  { universityName, course, bio, from, to, _id }: any,
                   index: number
                 ) => (
                   <section
@@ -200,11 +222,18 @@ export default function ProfileInfo() {
                       <h3 className="font-bold">{course}</h3>
                     </div>
                     <p>{bio}</p>
-                    {user?.course ? (
+
+                    <div className="flex space-x-2">
                       <EditButton fieldKey="education" />
-                    ) : (
-                      <AddButton fieldKey="education" />
-                    )}
+
+                      <DeleteButton
+                        deleteElement={{
+                          fieldName: "education",
+                          name: null,
+                          id: _id,
+                        }}
+                      />
+                    </div>
                   </section>
                 )
               )}
