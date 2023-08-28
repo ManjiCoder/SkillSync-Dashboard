@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import ModalUI from "./headlessUI/ModalUI";
-import FormHelper, { DeleteModalContent } from "./FormHelper";
+import {
+  AddComplexFormField,
+  EditSimpleFormField,
+  DeleteModalContent,
+} from "./FormHelper";
 import { formFields } from "@/utils/form";
 
 type ButtonProp = {
@@ -39,7 +43,7 @@ export function EditButton({ fieldKey }: ButtonProp) {
           closeModal={closeModal}
           title={`Edit ${fieldName}`}
         >
-          <FormHelper
+          <EditSimpleFormField
             fieldName={fieldName}
             fieldKey={fieldKey}
             closeModal={closeModal}
@@ -75,9 +79,9 @@ export function AddButton({ fieldKey }: ButtonProp) {
           closeModal={closeModal}
           title={`Add ${fieldName}`}
         >
-          <FormHelper
-            fieldName={fieldName}
+          <AddComplexFormField
             fieldKey={fieldKey}
+            fieldName={fieldName}
             closeModal={closeModal}
           />
         </ModalUI>
@@ -85,6 +89,7 @@ export function AddButton({ fieldKey }: ButtonProp) {
     </>
   );
 }
+
 export function DeleteButton({ deleteElement }: DeleteElementProps) {
   const { fieldName, name, id } = deleteElement;
   const [showModal, setShowModal] = useState(false);

@@ -43,11 +43,15 @@ export default async function handler(
 
       // For single Field
       if (!formFields.get(key).isArray) {
-        user = await UserModel.findByIdAndUpdate(id, {
-          $set: {
-            [key]: value,
+        user = await UserModel.findByIdAndUpdate(
+          id,
+          {
+            $set: {
+              [key]: value,
+            },
           },
-        });
+          { new: true }
+        );
       }
 
       // For Multiple Fields
@@ -60,16 +64,20 @@ export default async function handler(
         );
         // console.log(isSkillsExists);
         if (isAlreadyExists) {
-          return res.status(200).json({
+          return res.status(400).json({
             status: "error",
             message: `${formFields.get(key).fieldName} already exists.`,
           });
         }
-        user = await UserModel.findByIdAndUpdate(id, {
-          $push: {
-            [key]: [value],
+        user = await UserModel.findByIdAndUpdate(
+          id,
+          {
+            $push: {
+              [key]: [value],
+            },
           },
-        });
+          { new: true } // This enables showing the updated data
+        );
       }
       res.status(200).json({
         status: "ok",

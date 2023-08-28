@@ -14,12 +14,12 @@ export default function Profile({ user }: any) {
 
   useEffect(() => {
     dispatch(logIn(user));
-    console.log("login");
+    // console.log("login");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    console.log(user?.name, "[user]");
+    // console.log(user?.name, "[user]");
   }, [user]);
 
   return (

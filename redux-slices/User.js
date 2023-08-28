@@ -13,13 +13,15 @@ const User = createSlice({
       state.user = action.payload;
     },
     logOut(state, action) {
-      return (state = initialState);
+      return initialState;
     },
     updateField(state, action) {
+      console.log(action.payload);
       const { payload } = action;
       const key = Object.keys(payload);
       state.user[key] = payload[key];
     },
+
     deleteField(state, action) {
       console.log(1, action.payload);
       const { payload } = action;
@@ -33,6 +35,7 @@ const User = createSlice({
   },
 });
 
-export const { logIn, logOut, updateField, deleteField } = User.actions;
+export const { logIn, logOut, updateField, deleteField, pushToField } =
+  User.actions;
 
 export default User.reducer;

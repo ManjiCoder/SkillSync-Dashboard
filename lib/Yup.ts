@@ -100,10 +100,10 @@ export const certificationSchema = Yup.object().shape({
 export const experienceSchema = Yup.object().shape({
   title: Yup.string().required("Experience title is required").trim(),
   company: Yup.string().required("Company name is required").trim(),
-  location: Yup.string().trim(),
+  location: Yup.string().trim().nullable(),
   startDate: Yup.date().required("Start date is required"),
   endDate: Yup.date().nullable(),
-  description: Yup.string().trim(),
+  description: Yup.string().trim().nullable(),
 });
 
 export const educationSchema = Yup.object().shape({

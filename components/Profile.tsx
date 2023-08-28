@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { AddButton, DeleteButton, EditButton } from "./FormAction";
 import { AiFillStar } from "react-icons/ai";
 import UploadImage from "./UploadImage";
@@ -9,6 +9,14 @@ export interface Skill {
   proficiency: string;
   _id: string;
 }
+export interface Education {
+  degree: string;
+  institution: string;
+  startDate: Date;
+  endDate: null;
+  _id: string;
+}
+
 export interface Certification {
   title: string;
   issuingOrganization: string;
@@ -16,10 +24,17 @@ export interface Certification {
   expirationDate: null;
   _id: string;
 }
+export interface Experience {
+  title: string;
+  company: string;
+  startDate: Date;
+  endDate: null;
+  _id: string;
+}
 
 export default function ProfileInfo() {
   const { user } = useSelector((state: any) => state.user);
-
+  console.log(user.skills);
   const basicUserInfo = [
     { name: "Name", key: "name", value: user?.name },
     { name: "Email", key: "email", value: user?.email },
@@ -77,8 +92,8 @@ export default function ProfileInfo() {
                   <h1 className="text-xl font-medium">Skills</h1>
                   <AddButton fieldKey="skills" />
                 </div>
-                {user?.skills?.map(({ name, proficiency, _id }: Skill) => (
-                  <div key={_id} className="flex justify-between">
+                {user.skills?.map(({ name, proficiency, _id }: Skill) => (
+                  <div id={_id} key={_id} className="flex justify-between">
                     <p className="font-medium">
                       {`${name}`} <span> - {proficiency}</span>
                     </p>
@@ -134,31 +149,31 @@ export default function ProfileInfo() {
                   issuingOrganization,
                   expirationDate,
                 }: Certification) => (
-                  <div key={_id}>
-                    <section className="border-2 p-4 flex flex-col -mt-4 gap-y-3 rounded-full shadow-md">
-                      <div className="flex items-center">
+                  <Fragment key={_id}>
+                    <section className="border-2 p-4 flex items-center -mt-4 gap-y-3 rounded-full shadow-md">
+                      <div className="flex flex-1 items-center space-x-4">
                         {/* Icon */}
                         <span className="text-2xl text-white bg-[gold] rounded-full shadow-sm p-1.5">
                           <AiFillStar />
                         </span>
-                        <div className="flex flex-col flex-1 text-center">
+                        <div className="flex flex-col flex-1">
                           <h3>{title}</h3>
                           <h3>{issuingOrganization}</h3>
                         </div>
                       </div>
-                    </section>
-                    <div className="flex space-x-2">
-                      <EditButton fieldKey="skills" />
+                      <div className="flex space-x-2">
+                        <EditButton fieldKey="skills" />
 
-                      <DeleteButton
-                        deleteElement={{
-                          name: null,
-                          id: _id,
-                          fieldName: "certification",
-                        }}
-                      />
-                    </div>
-                  </div>
+                        <DeleteButton
+                          deleteElement={{
+                            name: null,
+                            id: _id,
+                            fieldName: "certification",
+                          }}
+                        />
+                      </div>
+                    </section>
+                  </Fragment>
                 )
               )}
 
@@ -170,29 +185,39 @@ export default function ProfileInfo() {
 
               {/* Experience */}
               {user?.experience?.map(
-                ({ companyName, role, time, from, to }: any, index: number) => (
+                (
+                  { _id, company, title, startDate, endDate }: Experience,
+                  index: number
+                ) => (
                   <section
-                    key={index}
+                    key={_id}
                     className="border-2 p-4 flex flex-col -mt-4 gap-y-3 rounded-md shadow-md"
                   >
                     <div className="flex font-bold justify-between">
                       <h3>
-                        {from}-{to}
+                        {new Date(startDate).toLocaleDateString()}-
+                        {endDate ? endDate : "Present"}
                       </h3>
                       <h3>
                         {"  "}
-                        {time}
+                        {title}
                       </h3>
                     </div>
                     <div className="flex justify-between">
-                      <h3>{companyName}</h3>
-                      <h3>--{role}</h3>
+                      <h3>{company}</h3>
+                      <h3>--{title}</h3>
                     </div>
-                    {user?.companyName ? (
-                      <EditButton fieldKey="experience" />
-                    ) : (
-                      <AddButton fieldKey="experience" />
-                    )}
+                    <div className="flex space-x-2 justify-end">
+                      <EditButton fieldKey="skills" />
+
+                      <DeleteButton
+                        deleteElement={{
+                          name: null,
+                          id: _id,
+                          fieldName: "experience",
+                        }}
+                      />
+                    </div>
                   </section>
                 )
               )}
@@ -206,24 +231,28 @@ export default function ProfileInfo() {
               {/* Education */}
               {user?.education?.map(
                 (
-                  { universityName, course, bio, from, to, _id }: any,
+                  { _id, degree, institution, startDate, endDate }: Education,
                   index: number
                 ) => (
                   <section
                     key={index}
                     className="border-2 p-4 flex flex-col -mt-4 gap-y-3 rounded-md shadow-md"
                   >
-                    <h3 className="text-xl text-indigo-600 font-semibold">
-                      {universityName}
-                    </h3>
+                    <div className="flex space-x-3 items-center">
+                      <h3 className="text-xl text-indigo-600 font-semibold">
+                        {institution}
+                      </h3>
+                      <h3 className="font-bold">{degree}</h3>
+                    </div>
 
                     <div className="flex justify-between">
-                      <h3>{`[${from} - ${to}]`}</h3>
-                      <h3 className="font-bold">{course}</h3>
+                      <h3>{`[${new Date(startDate).toLocaleDateString()} - ${
+                        endDate || "Present"
+                      }]`}</h3>
                     </div>
-                    <p>{bio}</p>
+                    {/* <p>{bio}</p> */}
 
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 justify-end">
                       <EditButton fieldKey="education" />
 
                       <DeleteButton

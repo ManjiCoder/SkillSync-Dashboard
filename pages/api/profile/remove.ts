@@ -10,7 +10,7 @@ export default async function handler(
   const { method } = req;
   const key = Object.keys(req.query)[0];
   const value = req.query[key];
-  console.log(key);
+  console.log(key, value);
   if (method === "PATCH") {
     try {
       const id = req.headers["x-user-id"];
@@ -19,7 +19,7 @@ export default async function handler(
       const user = await UserModel.findById(id);
 
       if (!user) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ message: "User not found" });
       }
 
       // Find the index of the key in object with the given ID
@@ -28,7 +28,7 @@ export default async function handler(
       );
 
       if (removeIndex === -1) {
-        return res.status(404).json({ error: `${key} not found` });
+        return res.status(404).json({ message: `${key} not found` });
       }
 
       // Remove the skill object from the array
